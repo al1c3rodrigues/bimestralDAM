@@ -1,0 +1,205 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final List<Map<String, dynamic>> perguntas = [
+    {
+      'pergunta': 'O que é DNA?',
+      'opcoes': ['Adenina, Timina, Citosina, Guanina', 'informação genética', 'Uracila', 'Evaldo Mariano'],
+      'respostaCorreta': 'informação genética',
+      'imagem': 'https://definicion.de/wp-content/uploads/2015/07/adn-1.jpg',
+    },
+    {
+      'pergunta': 'O que é RNA?',
+      'opcoes': [
+        'ácido desoxirribonucleico',
+        'decodificador do gene',
+        'um monossacarídeo',
+        'AUCG',
+      ],
+      'respostaCorreta': 'decodificador do gene',
+      'imagem':
+          'https://media.istockphoto.com/id/1295693748/pt/foto/messenger-rna-or-mrna-strand-3d-rendering-illustration-with-copy-space-genetics-science.jpg?s=2048x2048&w=is&k=20&c=3WFk60ysYcDxOB6bRtEVi-LOL5YfS4vxPe8Xxq91HMQ=',
+    },
+    {
+      'pergunta': 'Quais são as bases nitrogenadas do RNA?',
+      'opcoes': ['Adenina, Uracila, Citosina, Guanina', 'Adenina, Timina, Citosina, Guanina', 'Pentose e Hexose', 'fosfato e glicose'],
+      'respostaCorreta': 'Adenina, Uracila, Citosina, Guanina',
+      'imagem':
+          'https://www.partesdel.com/wp-content/uploads/Partes-del-ARN.jpg',
+    },
+    {
+      'pergunta': 'Quais são os tipos de plantas?',
+      'opcoes': [
+        'Briófitas',
+        'Pteridófitas',
+        'Gimnospermas',
+        'Angiospermas',
+        'Todas as alternativas',
+      ],
+      'respostaCorreta': 'Todas as alternativas',
+      'imagem':
+          'https://1.bp.blogspot.com/-FdGCHbe8O2k/WShlZuEjOBI/AAAAAAAABhU/VoORexmknfw8vKXN4VYo2uYRw9IPulZowCLcB/s1600/imagen.php.jpg',
+    },
+  ];
+
+  int perguntaAtual = 0;
+  int pontos = 0;
+  String? mensagem;
+  bool quizFinalizado = false;
+  String texto = 'Olá Mundo';
+  Color corFundo = const Color.fromARGB(255, 165, 216, 165)!;
+  Color corTexto = const Color.fromARGB(221, 4, 58, 4);
+
+  void verificarResposta(String respostaEscolhida) {
+    String respostaCorreta = perguntas[perguntaAtual]['respostaCorreta'];
+
+    setState(() {
+      if (respostaEscolhida == respostaCorreta) {
+        pontos++;
+        mensagem = 'Resposta certa! +1';
+      } else {
+        mensagem = 'Resposta errada!';
+      }
+    });
+
+    Future.delayed(Duration(seconds: 2), () {
+      setState(() {
+        mensagem = null;
+        if (perguntaAtual < perguntas.length - 1) {
+          perguntaAtual++;
+        } else {
+          quizFinalizado = true;
+        }
+      });
+    });
+  }
+
+  void reiniciarQuiz() {
+    setState(() {
+      perguntaAtual = 0;
+      pontos = 0;
+      quizFinalizado = false;
+      mensagem = null;
+    });
+  }
+
+  void alterarTexto() {
+    setState(() {
+      texto = 'Texto alterado!';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(
+        scaffoldBackgroundColor: corFundo,
+        textTheme: TextTheme(
+          bodyMedium: TextStyle(color: corTexto, fontSize: 18),
+        ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: const Color.fromARGB(255, 108, 151, 85),
+          foregroundColor: corTexto,
+          titleTextStyle: TextStyle(
+            color: corTexto,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+          iconTheme: IconThemeData(color: corTexto),
+        ),
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Quiz de Biologia'),
+        ),
+        body: Center(
+          child: quizFinalizado
+              ? _buildTelaFinal()
+              : _buildPerguntaAtual(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTelaFinal() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          '🎉 Parabéns! Você terminou o Quiz!',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 24, color: corTexto),
+        ),
+        SizedBox(height: 20),
+        Text('Pontuação final: $pontos',
+            style: TextStyle(fontSize: 18, color: corTexto)),
+        SizedBox(height: 20),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: corTexto),
+          onPressed: reiniciarQuiz,
+          child: Text('Recomeçar'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPerguntaAtual() {
+    final pergunta = perguntas[perguntaAtual];
+
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.network(
+            pergunta['imagem'],
+            width: 300,
+            height: 300,
+          ),
+          SizedBox(height: 20),
+          Text(
+            pergunta['pergunta'],
+            style: TextStyle(fontSize: 20, color: corTexto),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 20),
+          ...pergunta['opcoes'].map<Widget>((opcao) {
+            return Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 4.0, horizontal: 12),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: corTexto.withAlpha((0.8 * 255).toInt()),
+                  foregroundColor: const Color.fromARGB(255, 209, 224, 214),
+                ),
+                onPressed:
+                    mensagem == null ? () => verificarResposta(opcao) : null,
+                child: Text(opcao),
+              ),
+            );
+          }).toList(),
+          SizedBox(height: 20),
+          if (mensagem != null)
+            Text(
+              mensagem!,
+              style: TextStyle(fontSize: 16, color: corTexto),
+            ),
+          SizedBox(height: 20),
+          Text(
+            'Pontuação: $pontos',
+            style: TextStyle(fontSize: 16, color: corTexto),
+          ),
+        ],
+      ),
+    );
+  }
+}
+         
