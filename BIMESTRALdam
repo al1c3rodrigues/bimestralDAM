@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 void main() {
   runApp(MyApp());
 }
-
+// StatelessWidget não muda estado
+// StatefulWidget muda o estado
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
@@ -50,7 +51,7 @@ class _MyAppState extends State<MyApp> {
           'https://1.bp.blogspot.com/-FdGCHbe8O2k/WShlZuEjOBI/AAAAAAAABhU/VoORexmknfw8vKXN4VYo2uYRw9IPulZowCLcB/s1600/imagen.php.jpg',
     },
   ];
-
+  //inicializa os valores do quiz
   int perguntaAtual = 0;
   int pontos = 0;
   String? mensagem;
@@ -59,6 +60,7 @@ class _MyAppState extends State<MyApp> {
   Color corFundo = const Color.fromARGB(255, 165, 216, 165)!;
   Color corTexto = const Color.fromARGB(221, 4, 58, 4);
 
+  //função que verifica a resposta
   void verificarResposta(String respostaEscolhida) {
     String respostaCorreta = perguntas[perguntaAtual]['respostaCorreta'];
 
@@ -70,7 +72,8 @@ class _MyAppState extends State<MyApp> {
         mensagem = 'Resposta errada!';
       }
     });
-
+    
+    //espera 2 segundos e passa para a próxima pergunta
     Future.delayed(Duration(seconds: 2), () {
       setState(() {
         mensagem = null;
@@ -81,8 +84,9 @@ class _MyAppState extends State<MyApp> {
         }
       });
     });
-  }
+  }//fim do método anterior
 
+ // método para reiniciar o quiz
   void reiniciarQuiz() {
     setState(() {
       perguntaAtual = 0;
