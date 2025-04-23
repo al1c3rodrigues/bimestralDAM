@@ -50,6 +50,19 @@ class _MyAppState extends State<MyApp> {
       'imagem':
           'https://1.bp.blogspot.com/-FdGCHbe8O2k/WShlZuEjOBI/AAAAAAAABhU/VoORexmknfw8vKXN4VYo2uYRw9IPulZowCLcB/s1600/imagen.php.jpg',
     },
+    {
+      'pergunta': 'O que diz a primeira lei de Mendel?',
+      'opcoes': [
+        'sobre a observação de dois fatores, a observância de dois fatores, por exemplo, a cor e a textura',
+        'que a genética deriva do crossing-over',
+        'sobre o monoibridismo, a observância de um fator, por exemplo, a cor',
+        'que a genética só varia com um fator e tem variabilidade genética',
+        'nenhuma das alternativas',
+      ],
+      'respostaCorreta': 'sobre o monoibridismo, a observância de um fator, por exemplo, a cor',
+      'imagem':
+          'https://3.bp.blogspot.com/-F4R0PBl4XgI/WSYsGLep4iI/AAAAAAAAIDg/eTitzhZBG1kfr_aSTdmiui3N1_FPL5_lACLcB/s1600/experiencia_ervilhas.jpg',
+    },
   ];
   //inicializa os valores do quiz
   int perguntaAtual = 0;
@@ -67,9 +80,9 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       if (respostaEscolhida == respostaCorreta) {
         pontos++;
-        mensagem = 'Resposta certa! +1';
+        mensagem = '✅Resposta certa! +1';
       } else {
-        mensagem = 'Resposta errada!';
+        mensagem = '❌Resposta errada!';
       }
     });
     
@@ -101,7 +114,7 @@ class _MyAppState extends State<MyApp> {
       texto = 'Texto alterado!';
     });
   }
-
+  //constrói a interface do app
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -127,13 +140,13 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Center(
           child: quizFinalizado
-              ? _buildTelaFinal()
+              ? _buildTelaFinal() // Mostra a tela final se terminou
               : _buildPerguntaAtual(),
         ),
       ),
     );
   }
-
+  // mensagem ao final do quiz e o visual
   Widget _buildTelaFinal() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -144,7 +157,7 @@ class _MyAppState extends State<MyApp> {
           style: TextStyle(fontSize: 24, color: corTexto),
         ),
         SizedBox(height: 20),
-        Text('Pontuação final: $pontos',
+        Text('Pontuação final: $pontos', //contagem dos pontos no final do quiz
             style: TextStyle(fontSize: 18, color: corTexto)),
         SizedBox(height: 20),
         ElevatedButton(
@@ -158,7 +171,7 @@ class _MyAppState extends State<MyApp> {
 
   Widget _buildPerguntaAtual() {
     final pergunta = perguntas[perguntaAtual];
-
+//visual do app
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -174,6 +187,7 @@ class _MyAppState extends State<MyApp> {
             style: TextStyle(fontSize: 20, color: corTexto),
             textAlign: TextAlign.center,
           ),
+          //botões das opções
           SizedBox(height: 20),
           ...pergunta['opcoes'].map<Widget>((opcao) {
             return Padding(
@@ -189,7 +203,7 @@ class _MyAppState extends State<MyApp> {
                 child: Text(opcao),
               ),
             );
-          }).toList(),
+          }).toList(), //lista de widgets sendo convertida para uma lista real
           SizedBox(height: 20),
           if (mensagem != null)
             Text(
@@ -198,7 +212,7 @@ class _MyAppState extends State<MyApp> {
             ),
           SizedBox(height: 20),
           Text(
-            'Pontuação: $pontos',
+            'Pontuação: $pontos', //total de pontos
             style: TextStyle(fontSize: 16, color: corTexto),
           ),
         ],
