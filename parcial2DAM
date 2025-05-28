@@ -1,0 +1,117 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MaterialApp(home: Home()));
+}
+
+class Home extends StatefulWidget {
+  const Home({super.key});
+//O método createState() retorna uma instância da classe _HomeState que gerencia o estado da interface
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  final _controllerc1 = TextEditingController();// controla o campo da nota de corte do primeiro curso
+  final _controllerc2 = TextEditingController();// controla o campo da nota de corte do segundo curso
+  final _controllerInteresse = TextEditingController();// controla o campo da nota obtida pelo usuario
+
+  String _resultado = '';//Variável que guarda o resultado do cálculo para mostrar na tela
+
+//Método para converter a entrada do usuário (String) em número decimal (double)
+  double? _parseInput(String input) {
+    input = input.trim().replaceAll(',', '.');//Remove espaços e substitui vírgula por ponto (caso o usuário use vírgula para decimal)
+    if (input.isEmpty) return null;//se o valor for nulo ou invalido, retorna nulo
+    return double.tryParse(input);
+  }
+//retorna o resultado do calculo do curso que é mais vantajoso
+  void _calcular() {
+    final nota1 = _parseInput(_controllerc1.text);//nota do 1° curso
+    final nota2 = _parseInput(_controllerc2.text);//nota do 2° curso
+    final notaObtida = _parseInput(_controllerInteresse.text);//nota do usuario
+
+    if (nota1 == null || nota2 == null || notaObtida == null) { //se os dados forem invalidos, vai pedir para inserir dados validos
+      setState(() {
+        _resultado = 'Preencha todos os campos corretamente!';
+      });
+      return;
+    }
+
+    final vantagem1 = notaObtida - nota1;//subtração da nota do usuario pela nota do curso
+    final vantagem2 = notaObtida - nota2;//" "
+//aqui comeca as comparacoes, se o c1 é melhor que o c2 ou se o c2 é melhor que o c1, se caso os dois sejam vantajosos, ele mostra tbm
+
+    setState(() { //atualiza a tela com o resultado
+      if (vantagem1 > vantagem2) { //se o c1 é melhor que o c2
+        _resultado = 'O primeiro curso pode ser mais vantajoso para você!';
+      } else if (vantagem2 > vantagem1) { //se o c2 é melhor que o c1
+        _resultado = 'O segundo curso pode ser mais vantajoso para você!';
+      } else { //se os dois cursos possuem vantagens semelhantes
+        _resultado = 'Ambos os cursos possuem vantagens semelhantes.';
+      }
+    });
+  }
+//aqui começa a interface do app
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Comparador de notas'),
+        backgroundColor: const Color.fromARGB(255, 100, 63, 14), //cor do appbar
+      ),
+      body: SingleChildScrollView( //para permitir rolagem se a tela for pequena
+        padding: EdgeInsets.all(32), //espaçamento entre os elementos e padding de 32 pixels em volta
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Image.network('https://files.jornaluniao.com.br/conteudos/110693.jpg'),
+            SizedBox(height: 20),
+            Text(
+              'Compare os cursos',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            TextField( 
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Nota de corte (1° opção)',
+              ),
+              controller: _controllerc1,
+            ),
+            TextField(
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Nota de corte (2° opção)',
+              ),
+              controller: _controllerc2,
+            ),
+            TextField( //campo para inserir a nota do usuario
+              keyboardType: TextInputType.number, //tipo de teclado numerico
+              decoration: InputDecoration( //estilo do campo
+                labelText: 'Nota obtida',
+              ),
+              controller: _controllerInteresse,
+            ),
+            SizedBox(height: 20),
+            ElevatedButton( //botao para calcular
+              style: ElevatedButton.styleFrom( //estilo do botao
+                backgroundColor: const Color.fromARGB(255, 49, 30, 5),
+                padding: EdgeInsets.symmetric(vertical: 20),
+              ),
+              onPressed: _calcular, //chama o metodo calcular quando o botao for pressionado
+              child: Text(
+                'Comparar',
+                style: TextStyle(color: Colors.white), //cor do botao
+              ),
+            ),
+            SizedBox(height: 20),
+            Text( //mostra qual a opcao mais viavel ao usuario
+              _resultado,
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
